@@ -4,9 +4,15 @@ import { getRandomId } from '@/lib/utils';
 import { useToast } from './use-toast';
 import { createSampleMedications } from '@/lib/storage';
 
+// Adding these properties to support our modified app
+export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+  return children;
+};
+
 export function useAuth() {
   const [user, setUser] = useState<LocalUser | null>(null);
   const { toast } = useToast();
+  const [isLoading, setIsLoading] = useState(false);
 
   const checkAuth = useCallback(() => {
     try {
@@ -79,11 +85,51 @@ export function useAuth() {
     }
   }, [toast]);
 
+  // Create mock mutation objects to satisfy the API
+  const loginMutation = {
+    mutate: (credentials: any) => {
+      console.log("Mock login with:", credentials);
+      // Hardcoded login for edith
+      if (credentials.username === "edith@gmail.com" && credentials.password === "edith") {
+        login({
+          id: '1',
+          username: 'Edith',
+          email: credentials.username,
+          isGuest: false
+        });
+      } else {
+        toast({
+          title: "Login Failed",
+          description: "Invalid credentials. Use edith@gmail.com with password 'edith'",
+          variant: "destructive"
+        });
+      }
+    },
+    isPending: false
+  };
+
+  const registerMutation = {
+    mutate: (credentials: any) => {
+      console.log("Mock register with:", credentials);
+      login({
+        id: getRandomId(),
+        username: credentials.username,
+        email: credentials.email,
+        isGuest: false
+      });
+    },
+    isPending: false
+  };
+
   return {
     user,
+    isLoading,
+    error: null,
     login,
     logout,
     checkAuth,
-    createGuestUser
+    createGuestUser,
+    loginMutation,
+    registerMutation
   };
 }

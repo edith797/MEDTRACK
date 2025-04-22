@@ -4,30 +4,27 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/theme-provider";
+import { AuthProvider } from "@/hooks/use-auth-provider";
+import { ProtectedRoute } from "@/lib/protected-route";
 import NotFound from "@/pages/not-found";
-import Login from "@/pages/login";
+import AuthPage from "@/pages/auth-page";
 import Dashboard from "@/pages/dashboard";
 import AddMedication from "@/pages/add-medication";
 import EditMedication from "@/pages/edit-medication";
 import NavBar from "@/components/nav-bar";
-import { useAuth } from "@/hooks/use-auth";
-import { useEffect } from "react";
+import { useAuth } from "@/hooks/use-auth-provider";
 
 function Router() {
-  const { user, checkAuth } = useAuth();
-  
-  useEffect(() => {
-    checkAuth();
-  }, [checkAuth]);
+  const { user } = useAuth();
   
   return (
     <Switch>
-      <Route path="/" component={Login} />
-      <Route path="/auth" component={Login} />
-      <Route path="/login" component={Login} />
-      <Route path="/dashboard" component={user ? Dashboard : Login} />
-      <Route path="/add-medication" component={user ? AddMedication : Login} />
-      <Route path="/edit-medication/:id" component={user ? EditMedication : Login} />
+      <Route path="/" component={user ? Dashboard : AuthPage} />
+      <Route path="/auth" component={AuthPage} />
+      <Route path="/login" component={AuthPage} />
+      <ProtectedRoute path="/dashboard" component={Dashboard} />
+      <ProtectedRoute path="/add-medication" component={AddMedication} />
+      <ProtectedRoute path="/edit-medication/:id" component={EditMedication} />
       <Route component={NotFound} />
     </Switch>
   );
@@ -49,8 +46,10 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider defaultTheme="light" storageKey="medtrack-theme">
         <TooltipProvider>
-          <Toaster />
-          <AppContent />
+          <AuthProvider>
+            <Toaster />
+            <AppContent />
+          </AuthProvider>
         </TooltipProvider>
       </ThemeProvider>
     </QueryClientProvider>
