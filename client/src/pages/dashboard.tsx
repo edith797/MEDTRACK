@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -17,14 +17,22 @@ export default function Dashboard() {
   const [notificationPermission, setNotificationPermission] = useState<boolean | null>(null);
   
   // Check notification permission when component mounts
-  useState(() => {
+  useEffect(() => {
     const checkPermission = async () => {
-      const hasPermission = await checkNotificationPermission();
-      setNotificationPermission(hasPermission);
+      try {
+        const hasPermission = await checkNotificationPermission();
+        setNotificationPermission(hasPermission);
+      } catch (error) {
+        console.error("Error checking notification permission:", error);
+        setNotificationPermission(false);
+      }
     };
     
     checkPermission();
-  });
+    
+    // For debugging
+    console.log("Dashboard mounted, medications:", medications);
+  }, [medications]);
   
   const handleRequestPermission = async () => {
     const granted = await requestNotificationPermission();

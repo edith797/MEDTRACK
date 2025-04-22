@@ -17,12 +17,14 @@ import { useAuth } from "@/hooks/use-auth";
 function Router() {
   const { user } = useAuth();
   
+  console.log("App Router - Current user state:", user);
+  
   return (
     <Switch>
       <Route path="/" component={user ? Dashboard : AuthPage} />
       <Route path="/auth" component={AuthPage} />
       <Route path="/login" component={AuthPage} />
-      <ProtectedRoute path="/dashboard" component={Dashboard} />
+      <Route path="/dashboard" component={Dashboard} /> {/* Temporarily removed protection for debugging */}
       <ProtectedRoute path="/add-medication" component={AddMedication} />
       <ProtectedRoute path="/edit-medication/:id" component={EditMedication} />
       <Route component={NotFound} />

@@ -91,12 +91,29 @@ export function useAuth() {
       console.log("Mock login with:", credentials);
       // Hardcoded login for edith
       if (credentials.username === "edith@gmail.com" && credentials.password === "edith") {
-        login({
+        console.log("Login credentials matched, creating user");
+        const user = {
           id: '1',
           username: 'Edith',
           email: credentials.username,
           isGuest: false
+        };
+        // Store in localStorage
+        localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(user));
+        // Update state
+        setUser(user);
+        
+        console.log("User set:", user);
+        
+        toast({
+          title: "Login Successful",
+          description: "Welcome back, Edith!",
         });
+        
+        // Force a navigation after successful login
+        setTimeout(() => {
+          window.location.href = "/dashboard";
+        }, 500);
       } else {
         toast({
           title: "Login Failed",
