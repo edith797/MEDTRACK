@@ -4,7 +4,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/theme-provider";
-import { AuthProvider } from "@/hooks/use-auth-provider";
+import { AuthProvider } from "@/hooks/use-auth";
 import { ProtectedRoute } from "@/lib/protected-route";
 import NotFound from "@/pages/not-found";
 import AuthPage from "@/pages/auth-page";
@@ -12,7 +12,7 @@ import Dashboard from "@/pages/dashboard";
 import AddMedication from "@/pages/add-medication";
 import EditMedication from "@/pages/edit-medication";
 import NavBar from "@/components/nav-bar";
-import { useAuth } from "@/hooks/use-auth-provider";
+import { useAuth } from "@/hooks/use-auth";
 
 function Router() {
   const { user } = useAuth();

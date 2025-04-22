@@ -7,8 +7,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { useAuth } from "@/hooks/use-auth-provider";
-import { EyeIcon, EyeOffIcon } from "lucide-react";
+import { useAuth } from "@/hooks/use-auth";
+import { EyeIcon, EyeOffIcon, Loader2 } from "lucide-react";
 
 export default function AuthPage() {
   const [, navigate] = useLocation();
