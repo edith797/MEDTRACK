@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,16 +14,26 @@ export default function Login() {
   const [, navigate] = useLocation();
   const { toast } = useToast();
   const { login, createGuestUser } = useAuth();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  // Pre-fill with Edith's credentials for easier testing
+  const [email, setEmail] = useState("edith@gmail.com");
+  const [password, setPassword] = useState("edith");
   const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   
+  // Auto-login on component mount for testing
+  useEffect(() => {
+    console.log("Login page mounted");
+    // This helps with debugging the login flow
+    console.log("Starting with pre-filled credentials:", email, password);
+  }, []);
+  
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("Login form submitted with:", email, password);
     
     // Basic validation
     if (!email || !password) {
+      console.log("Login validation failed: missing email or password");
       toast({
         title: "Validation Error",
         description: "Please enter both email and password",
@@ -34,15 +44,23 @@ export default function Login() {
     
     // Check for specific credentials: edith@gmail.com / edith
     if (email.toLowerCase() === "edith@gmail.com" && password === "edith") {
-      login({
+      console.log("Login credentials match! Logging in as Edith...");
+      const user = {
         id: '1',
         username: 'Edith',
         email,
         isGuest: false
-      });
+      };
       
-      navigate("/dashboard");
+      login(user);
+      console.log("Navigating to dashboard...");
+      
+      // Add a slight delay to ensure state updates before navigation
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 100);
     } else {
+      console.log("Login failed: invalid credentials");
       toast({
         title: "Login Failed",
         description: "Invalid credentials. Use edith@gmail.com with password 'edith'",

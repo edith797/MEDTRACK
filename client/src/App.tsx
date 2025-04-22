@@ -22,7 +22,8 @@ function Router() {
   
   return (
     <Switch>
-      <Route path="/" component={user ? Dashboard : Login} />
+      <Route path="/" component={Login} />
+      <Route path="/auth" component={Login} />
       <Route path="/login" component={Login} />
       <Route path="/dashboard" component={user ? Dashboard : Login} />
       <Route path="/add-medication" component={user ? AddMedication : Login} />
