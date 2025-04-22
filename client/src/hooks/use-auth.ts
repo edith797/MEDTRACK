@@ -1,10 +1,9 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { LocalUser, STORAGE_KEYS } from '@shared/schema';
 import { getRandomId } from '@/lib/utils';
 import { useToast } from './use-toast';
 import { createSampleMedications } from '@/lib/storage';
 
-// Adding these properties to support our modified app
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   return children;
 };
@@ -12,7 +11,23 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 export function useAuth() {
   const [user, setUser] = useState<LocalUser | null>(null);
   const { toast } = useToast();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Load user from localStorage on mount
+  useEffect(() => {
+    try {
+      const storedUser = localStorage.getItem(STORAGE_KEYS.USER);
+      if (storedUser) {
+        const userData = JSON.parse(storedUser);
+        setUser(userData);
+        console.log("User loaded from localStorage:", userData);
+      }
+    } catch (error) {
+      console.error('Error loading user from localStorage:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
 
   const checkAuth = useCallback(() => {
     try {
@@ -85,7 +100,7 @@ export function useAuth() {
     }
   }, [toast]);
 
-  // Create mock mutation objects to satisfy the API
+  // Mock mutation objects
   const loginMutation = {
     mutate: (credentials: any) => {
       console.log("Mock login with:", credentials);
@@ -111,9 +126,7 @@ export function useAuth() {
         });
         
         // Force a navigation after successful login
-        setTimeout(() => {
-          window.location.href = "/dashboard";
-        }, 500);
+        window.location.href = "/dashboard";
       } else {
         toast({
           title: "Login Failed",
