@@ -32,15 +32,23 @@ export default function Login() {
       return;
     }
     
-    // For this frontend-only app, we simulate login without authentication
-    login({
-      id: '1',
-      username: email.split('@')[0],
-      email,
-      isGuest: false
-    });
-    
-    navigate("/dashboard");
+    // Check for specific credentials: edith@gmail.com / edith
+    if (email.toLowerCase() === "edith@gmail.com" && password === "edith") {
+      login({
+        id: '1',
+        username: 'Edith',
+        email,
+        isGuest: false
+      });
+      
+      navigate("/dashboard");
+    } else {
+      toast({
+        title: "Login Failed",
+        description: "Invalid credentials. Use edith@gmail.com with password 'edith'",
+        variant: "destructive"
+      });
+    }
   };
   
   const handleGuestAccess = () => {
