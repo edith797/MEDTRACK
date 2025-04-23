@@ -4,6 +4,7 @@ import { eq } from "drizzle-orm";
 import postgres from "postgres";
 import session from "express-session";
 import connectPg from "connect-pg-simple";
+import memorystore from 'memorystore';
 
 // modify the interface with any CRUD methods
 // you might need
@@ -109,7 +110,7 @@ export class MemStorage implements IStorage {
     this.currentId = 1;
     
     // Create memory-based session store
-    const MemoryStore = require('memorystore')(session);
+    const MemoryStore = memorystore(session);
     this.sessionStore = new MemoryStore({
       checkPeriod: 86400000 // prune expired entries every 24h
     });
